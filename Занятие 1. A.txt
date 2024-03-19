@@ -1,0 +1,32 @@
+p, v = map(int, input().split())
+q, m = map(int, input().split())
+sum = v+v+m+m+2
+
+if p < 0 and q < 0:
+    p = abs(p)
+    q = abs(q)
+
+if p > q:
+    new_place, new_steps = q, m
+    q, m = p, v
+    p, v = new_place, new_steps
+
+deduction = 0
+if p + v >= q - m: # Справа есть пересечение
+    if p >= q - m: # Пересечение доходит влево как минимум до точки
+        if p + v <= q + m: # Пересечение вправо не выходит за пределы
+            deduction += v + 1
+        else: # Пересечение вправо выходит за пределы
+            deduction += q + m - p + 1
+    else: # Пересечение не доходит влево до точки
+        if p + v <= q + m: # Пересечение вправо не выходит за пределы
+            deduction += p + v - (q - m) + 1
+        else: # Пересечение вправо выходит за пределы
+            deduction += 2*m + 1
+
+if p > q - m: # Слева есть пересечение
+    if q - m >= p - v: # Слева не выходит за пределы
+        deduction += p - (q - m)
+    else: # Слева выходит за пределы
+        deduction += v
+print(sum - deduction)

@@ -1,0 +1,27 @@
+first_data = str(input())
+second_data = str(input())
+home_data = int(input())
+
+first_game = first_data.split(":")
+second_game = second_data.split(":")
+
+first_team_first_game = int(first_game[0])
+second_team_first_game = int(first_game[1])
+first_team_second_game = int(second_game[0])
+second_team_second_game = int(second_game[1])
+
+additional_balls = 0
+if first_team_first_game + first_team_second_game > second_team_first_game + second_team_second_game:
+    print(additional_balls)
+else:
+    additional_balls = second_team_first_game + second_team_second_game - first_team_first_game - first_team_second_game
+    if home_data == 1:
+        if first_team_second_game + additional_balls > second_team_first_game:
+            print(additional_balls)
+        else:
+            print(additional_balls + 1)
+    else:
+        if first_team_first_game > second_team_second_game:
+            print(additional_balls)
+        else:
+            print(additional_balls + 1)
