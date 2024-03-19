@@ -1,0 +1,469 @@
+1)
+p, v = map(int, input().split())
+q, m = map(int, input().split())
+sum = v+v+m+m+2
+
+if p < 0 and q < 0:
+    p = abs(p)
+    q = abs(q)
+
+if p > q:
+    new_place, new_steps = q, m
+    q, m = p, v
+    p, v = new_place, new_steps
+
+deduction = 0
+if p + v >= q - m: # Справа есть пересечение
+    if p >= q - m: # Пересечение доходит влево как минимум до точки
+        if p + v <= q + m: # Пересечение вправо не выходит за пределы
+            deduction += v + 1
+        else: # Пересечение вправо выходит за пределы
+            deduction += q + m - p + 1
+    else: # Пересечение не доходит влево до точки
+        if p + v <= q + m: # Пересечение вправо не выходит за пределы
+            deduction += p + v - (q - m) + 1
+        else: # Пересечение вправо выходит за пределы
+            deduction += 2*m + 1
+
+if p > q - m: # Слева есть пересечение
+    if q - m >= p - v: # Слева не выходит за пределы
+        deduction += p - (q - m)
+    else: # Слева выходит за пределы
+        deduction += v
+print(sum - deduction)
+
+2)
+first_data = str(input())
+second_data = str(input())
+home_data = int(input())
+
+first_game = first_data.split(":")
+second_game = second_data.split(":")
+
+first_team_first_game = int(first_game[0])
+second_team_first_game = int(first_game[1])
+first_team_second_game = int(second_game[0])
+second_team_second_game = int(second_game[1])
+
+additional_balls = 0
+if first_team_first_game + first_team_second_game > second_team_first_game + second_team_second_game:
+    print(additional_balls)
+else:
+    additional_balls = second_team_first_game + second_team_second_game - first_team_first_game - first_team_second_game
+    if home_data == 1:
+        if first_team_second_game + additional_balls > second_team_first_game:
+            print(additional_balls)
+        else:
+            print(additional_balls + 1)
+    else:
+        if first_team_first_game > second_team_second_game:
+            print(additional_balls)
+        else:
+            print(additional_balls + 1)
+3) С отладкой
+import random
+def random_symbol():
+    a = random.randint(1,20)
+    if a == 1:
+        return 'B'
+    elif a == 2:
+        return 'R'
+    else:
+        return '*'
+def mas_input(array):
+    print('#' * 20)
+    for i in array:
+        for j in range(8):
+            if j in i:
+                print('* ', end='')
+            else:
+                print('  ', end='')
+        print()
+
+mas = []
+for i in range(8):
+    a = ''
+    for j in range(8):
+        a += random_symbol() + " "
+    mas.append(a.strip())
+
+for i in mas:
+    print(i.strip())
+
+suitable_cells = []
+for i in range(8):
+    mas_mas = []
+    for j in range(8):
+        mas_mas.append(j)
+    suitable_cells.append(mas_mas)
+
+b_dict = []
+r_dict = []
+for i in range(8):
+    count = 0
+    for j in range(8):
+        if mas[i][count] != '*':
+            if mas[i][count] == 'B':
+                r_dict.append((i, count//2))
+            else:
+                b_dict.append((i, count//2))
+            suitable_cells[i].remove(count//2)
+        count += 2
+print(b_dict)
+print(r_dict)
+
+#mas_input(suitable_cells)
+
+#print('#'*20)
+for b in b_dict:
+    flag1 = True
+    flag2 = True
+    flag3 = True
+    flag4 = True
+    for i in range(1,8):
+        if int(b[0]) + i < 8 and int(b[0]) + i >= 0 and flag1 == True:
+            if mas[int(b[0]) + i][int(b[1])*2] == '*':
+                if b[1] in suitable_cells[int(b[0]) + i]:
+                    suitable_cells[int(b[0]) + i].remove(b[1])
+            else:
+                flag1 = False
+
+        if int(b[0]) - i < 8 and int(b[0]) - i >= 0 and flag2 == True:
+            if mas[int(b[0]) - i][int(b[1])*2] == '*':
+                if b[1] in suitable_cells[int(b[0]) - i]:
+                    suitable_cells[int(b[0]) - i].remove(b[1])
+            else:
+                flag2 = False
+        if int(b[1]) + i < 8 and int(b[1]) + i >= 0 and flag3 == True:
+            if mas[int(b[0])][(int(b[1]) + i) * 2] == '*':
+                if b[1] + i in suitable_cells[int(b[0])]:
+                    suitable_cells[int(b[0])].remove(b[1] + i)
+            else:
+                flag3 = False
+        if int(b[1]) - i < 8 and int(b[1]) - i >= 0 and flag4 == True:
+            if mas[int(b[0])][(int(b[1]) - i) * 2] == '*':
+                if b[1] - i in suitable_cells[int(b[0])]:
+                    suitable_cells[int(b[0])].remove(b[1] - i)
+            else:
+                flag4 = False
+for r in r_dict:
+    flag1 = True
+    flag2 = True
+    flag3 = True
+    flag4 = True
+    for i in range(1,8):
+        if int(r[0]) + i < 8 and int(r[0]) + i >= 0 and int(r[1]) + i < 8 and int(r[1]) + i >= 0 and flag1 == True:
+            if mas[int(r[0]) + i][(int(r[1]) + i)*2] == '*':
+                if r[1] + i in suitable_cells[int(r[0]) + i]:
+                    suitable_cells[int(r[0]) + i].remove(r[1] + i)
+            else:
+                flag1 = False
+        if int(r[0]) - i < 8 and int(r[0]) - i >= 0 and int(r[1]) - i < 8 and int(r[1]) - i >= 0 and flag2 == True:
+            if mas[int(r[0]) - i][(int(r[1]) - i)*2] == '*':
+                if r[1] - i in suitable_cells[int(r[0]) - i]:
+                    suitable_cells[int(r[0]) - i].remove(r[1] - i)
+            else:
+                flag2 = False
+        if int(r[0]) - i < 8 and int(r[0]) - i >= 0 and int(r[1]) + i < 8 and int(r[1]) + i >= 0 and flag3 == True:
+            if mas[int(r[0]) - i][(int(r[1]) + i)*2] == '*':
+                if r[1] + i in suitable_cells[int(r[0]) - i]:
+                    suitable_cells[int(r[0]) - i].remove(r[1] + i)
+            else:
+                flag3 = False
+        if int(r[0]) + i < 8 and int(r[0]) + i >= 0 and int(r[1]) - i < 8 and int(r[1]) - i >= 0 and flag4 == True:
+            if mas[int(r[0]) + i][(int(r[1]) - i)*2] == '*':
+                if r[1] - i in suitable_cells[int(r[0]) + i]:
+                    suitable_cells[int(r[0]) + i].remove(r[1] - i)
+            else:
+                flag4 = False
+
+mas_input(suitable_cells)
+cnt = 0
+for i in suitable_cells:
+    cnt += len(i)
+print(cnt)
+
+3) Отправленное
+
+def mas_input(array):
+    print('#' * 20)
+    for i in array:
+        for j in range(8):
+            if j in i:
+                print('*', end='')
+            else:
+                print(' ', end='')
+        print()
+
+mas = []
+# for i in range(8):
+#     a = ''
+#     for j in range(8):
+#         a += random_symbol()
+#     mas.append(a.strip())
+for i in range(8):
+    mas.append(str(input()))
+
+suitable_cells = []
+for i in range(8):
+    mas_mas = []
+    for j in range(8):
+        mas_mas.append(j)
+    suitable_cells.append(mas_mas)
+
+b_dict = []
+r_dict = []
+for i in range(8):
+    count = 0
+    for j in range(8):
+        if mas[i][count] != '*':
+            if mas[i][count] == 'B':
+                r_dict.append((i, count))
+            else:
+                b_dict.append((i, count))
+            suitable_cells[i].remove(count)
+        count += 1
+for b in b_dict:
+    flag1 = True
+    flag2 = True
+    flag3 = True
+    flag4 = True
+    for i in range(1,8):
+        if int(b[0]) + i < 8 and int(b[0]) + i >= 0 and flag1 == True:
+            if mas[int(b[0]) + i][int(b[1])] == '*':
+                if b[1] in suitable_cells[int(b[0]) + i]:
+                    suitable_cells[int(b[0]) + i].remove(b[1])
+            else:
+                flag1 = False
+
+        if int(b[0]) - i < 8 and int(b[0]) - i >= 0 and flag2 == True:
+            if mas[int(b[0]) - i][int(b[1])] == '*':
+                if b[1] in suitable_cells[int(b[0]) - i]:
+                    suitable_cells[int(b[0]) - i].remove(b[1])
+            else:
+                flag2 = False
+        if int(b[1]) + i < 8 and int(b[1]) + i >= 0 and flag3 == True:
+            if mas[int(b[0])][(int(b[1]) + i)] == '*':
+                if b[1] + i in suitable_cells[int(b[0])]:
+                    suitable_cells[int(b[0])].remove(b[1] + i)
+            else:
+                flag3 = False
+        if int(b[1]) - i < 8 and int(b[1]) - i >= 0 and flag4 == True:
+            if mas[int(b[0])][(int(b[1]) - i)] == '*':
+                if b[1] - i in suitable_cells[int(b[0])]:
+                    suitable_cells[int(b[0])].remove(b[1] - i)
+            else:
+                flag4 = False
+for r in r_dict:
+    flag1 = True
+    flag2 = True
+    flag3 = True
+    flag4 = True
+    for i in range(1,8):
+        if int(r[0]) + i < 8 and int(r[0]) + i >= 0 and int(r[1]) + i < 8 and int(r[1]) + i >= 0 and flag1 == True:
+            if mas[int(r[0]) + i][(int(r[1]) + i)] == '*':
+                if r[1] + i in suitable_cells[int(r[0]) + i]:
+                    suitable_cells[int(r[0]) + i].remove(r[1] + i)
+            else:
+                flag1 = False
+        if int(r[0]) - i < 8 and int(r[0]) - i >= 0 and int(r[1]) - i < 8 and int(r[1]) - i >= 0 and flag2 == True:
+            if mas[int(r[0]) - i][(int(r[1]) - i)] == '*':
+                if r[1] - i in suitable_cells[int(r[0]) - i]:
+                    suitable_cells[int(r[0]) - i].remove(r[1] - i)
+            else:
+                flag2 = False
+        if int(r[0]) - i < 8 and int(r[0]) - i >= 0 and int(r[1]) + i < 8 and int(r[1]) + i >= 0 and flag3 == True:
+            if mas[int(r[0]) - i][(int(r[1]) + i)] == '*':
+                if r[1] + i in suitable_cells[int(r[0]) - i]:
+                    suitable_cells[int(r[0]) - i].remove(r[1] + i)
+            else:
+                flag3 = False
+        if int(r[0]) + i < 8 and int(r[0]) + i >= 0 and int(r[1]) - i < 8 and int(r[1]) - i >= 0 and flag4 == True:
+            if mas[int(r[0]) + i][(int(r[1]) - i)] == '*':
+                if r[1] - i in suitable_cells[int(r[0]) + i]:
+                    suitable_cells[int(r[0]) + i].remove(r[1] - i)
+            else:
+                flag4 = False
+
+#mas_input(suitable_cells)
+cnt = 0
+for i in suitable_cells:
+    cnt += len(i)
+print(cnt)
+
+Вторая партия задач
+1)
+k = int(input())
+x = []
+y = []
+for i in range(k):
+    xi,yi = map(int,input().split())
+    x.append(xi)
+    y.append(yi)
+print(min(x), min(y), max(x), max(y))
+
+2)
+n,k = map(int,input().split())
+mas = [int(x) for x in input().split()]
+
+if n == 1 or (n == 2 and mas[0] >= mas[1]):
+    print('0')
+    exit()
+if n == 2 and mas[0] < mas[1]:
+    print(int(mas[1]) - int(mas[0]))
+    exit()
+difference = 0
+for i in range(len(mas)-1):
+    if i+k+1 <= len(mas):
+        max_element = int(max(mas[i+1:i+k+1]))
+    else:
+        max_element = int(max(mas[i:len(mas)]))
+    if max_element - int(mas[i]) > difference:
+        difference = max_element - int(mas[i])
+print(difference)
+
+3)
+n = int(input())
+mas = [int(x) for x in input().split()]
+max_length = max(mas)
+mas.remove(max_length)
+if max_length > sum(mas):
+    print(max_length - sum(mas))
+else:
+    print(sum(mas)+max_length)
+
+4)
+n = int(input())
+mas = []
+for i in range(n):
+    mas.append([int(x) for x in input().split()])
+
+string_indent = [-1, 1, 0, 0]
+column_indent = [0, 0, -1, 1]
+perimetr = 0
+for j in mas:
+    perimetr += 4
+    for i in range(4):
+        if [j[0] + string_indent[i], j[1] + column_indent[i]] in mas:
+            perimetr -= 1
+print(perimetr)
+
+6)
+n = int(input())
+clockwise = [int(x) for x in input().split()]
+a,b,k = map(int,input().split())
+
+counterclockwise = [clockwise[0]] + clockwise[::-1]
+counterclockwise = counterclockwise[:-1]
+if a % k == 0:
+    a -= 1
+if b % k == 0:
+    b -= 1
+min_index = a // k
+max_index = b // k
+if min_index == max_index:
+    print(max(clockwise[min_index % n], counterclockwise[min_index % n]))
+    exit()
+if max_index - min_index > n:
+    print(max(clockwise))
+    exit()
+if min_index >= n:
+    divider = min_index // n
+    min_index = min_index % n
+    max_index = int(max_index - (divider*n))
+    #print(divider, min_index, max_index)
+biggest_number = 0
+if max_index > n:
+    max_index = max_index % n
+    biggest_number = max(max(max(clockwise[:max_index+1]), max(clockwise[min_index:])), \
+                     max(max(counterclockwise[0:max_index+1]), max(counterclockwise[min_index:])))
+else:
+    biggest_number = max(max(clockwise[min_index:max_index + 1]), max(counterclockwise[min_index:max_index]))
+print(biggest_number)
+
+7)
+t = int(input())
+
+def processing(mas):
+    answer_mas = []
+    while len(mas) > 0:
+        a = mas[0]
+        mas.pop(0)
+        counter = 1
+        min_element = a
+        if a <= len(mas):
+            for i in range(a):
+                if mas[0] >= counter + 1 and min_element >= counter + 1:
+                    min_element = min(min_element, mas[0])
+                    mas.pop(0)
+                else:
+                    break
+                counter += 1
+        else:
+            for i in range(len(mas)):
+                if mas[0] >= counter + 1 and min_element >= counter + 1:
+                    min_element = min(min_element, mas[0])
+                    mas.pop(0)
+                else:
+                    break
+                counter += 1
+        answer_mas.append(str(counter))
+    print(len(answer_mas))
+    print(' '.join(answer_mas))
+for i in range(t):
+    n = int(input())
+    array = [int(x) for x in input().split()]
+    processing(array)
+8)
+from copy import deepcopy
+n, m = map(int, input().split())
+table = []
+for i in range(n):
+    mas = [int(x) for x in input().split()]
+    table.append(mas)
+def string_del(table1, index):
+    table_changing = table1
+    table_changing.pop(index)
+    return table_changing
+def column_del(table2, index):
+    table_changing = table2
+    for i in table_changing:
+        i.pop(index)
+    return table_changing
+def max_table(table):
+    max_el = []
+    for i in table:
+        max_el.append(max(i))
+    return max(max_el)
+def index_max(table):
+    max_element = max_table(table)
+    for i in table:
+        if max_element in i:
+            return [table.index(i), i.index(max_element)]
+
+new_table = deepcopy(table)
+
+s1 = index_max(table)[0] + 1
+c2 = index_max(new_table)[1] + 1
+
+string_del(table, index_max(table)[0])
+column_del(new_table, index_max(new_table)[1])
+
+s2 = index_max(table)[1] + 1
+c1 = index_max(new_table)[0] + 1
+
+column_del(table, index_max(table)[1])
+string_del(new_table, index_max(new_table)[0])
+
+answer = []
+for i in table,new_table:
+    answer.append(max_table(i))
+if answer[0] <= answer[1]:
+    print(s1, s2)
+else:
+    print(c1, c2)
+
+
+
+
+
