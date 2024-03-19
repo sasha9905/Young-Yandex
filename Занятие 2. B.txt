@@ -1,0 +1,18 @@
+n,k = map(int,input().split())
+mas = [int(x) for x in input().split()]
+
+if n == 1 or (n == 2 and mas[0] >= mas[1]):
+    print('0')
+    exit()
+if n == 2 and mas[0] < mas[1]:
+    print(int(mas[1]) - int(mas[0]))
+    exit()
+difference = 0
+for i in range(len(mas)-1):
+    if i+k+1 <= len(mas):
+        max_element = int(max(mas[i+1:i+k+1]))
+    else:
+        max_element = int(max(mas[i:len(mas)]))
+    if max_element - int(mas[i]) > difference:
+        difference = max_element - int(mas[i])
+print(difference)

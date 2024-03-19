@@ -1,0 +1,14 @@
+n = int(input())
+mas = []
+for i in range(n):
+    mas.append([int(x) for x in input().split()])
+
+string_indent = [-1, 1, 0, 0]
+column_indent = [0, 0, -1, 1]
+perimetr = 0
+for j in mas:
+    perimetr += 4
+    for i in range(4):
+        if [j[0] + string_indent[i], j[1] + column_indent[i]] in mas:
+            perimetr -= 1
+print(perimetr)

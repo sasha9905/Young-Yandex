@@ -1,0 +1,8 @@
+n = int(input())
+mas = [int(x) for x in input().split()]
+max_length = max(mas)
+mas.remove(max_length)
+if max_length > sum(mas):
+    print(max_length - sum(mas))
+else:
+    print(sum(mas)+max_length)

@@ -1,0 +1,31 @@
+n = int(input())
+clockwise = [int(x) for x in input().split()]
+a,b,k = map(int,input().split())
+
+counterclockwise = [clockwise[0]] + clockwise[::-1]
+counterclockwise = counterclockwise[:-1]
+if a % k == 0:
+    a -= 1
+if b % k == 0:
+    b -= 1
+min_index = a // k
+max_index = b // k
+if min_index == max_index:
+    print(max(clockwise[min_index % n], counterclockwise[min_index % n]))
+    exit()
+if max_index - min_index > n:
+    print(max(clockwise))
+    exit()
+if min_index >= n:
+    divider = min_index // n
+    min_index = min_index % n
+    max_index = int(max_index - (divider*n))
+    #print(divider, min_index, max_index)
+biggest_number = 0
+if max_index > n:
+    max_index = max_index % n
+    biggest_number = max(max(max(clockwise[:max_index+1]), max(clockwise[min_index:])), \
+                     max(max(counterclockwise[0:max_index+1]), max(counterclockwise[min_index:])))
+else:
+    biggest_number = max(max(clockwise[min_index:max_index + 1]), max(counterclockwise[min_index:max_index]))
+print(biggest_number)

@@ -1,0 +1,47 @@
+from copy import deepcopy
+n, m = map(int, input().split())
+table = []
+for i in range(n):
+    mas = [int(x) for x in input().split()]
+    table.append(mas)
+def string_del(table1, index):
+    table_changing = table1
+    table_changing.pop(index)
+    return table_changing
+def column_del(table2, index):
+    table_changing = table2
+    for i in table_changing:
+        i.pop(index)
+    return table_changing
+def max_table(table):
+    max_el = []
+    for i in table:
+        max_el.append(max(i))
+    return max(max_el)
+def index_max(table):
+    max_element = max_table(table)
+    for i in table:
+        if max_element in i:
+            return [table.index(i), i.index(max_element)]
+
+new_table = deepcopy(table)
+
+s1 = index_max(table)[0] + 1
+c2 = index_max(new_table)[1] + 1
+
+string_del(table, index_max(table)[0])
+column_del(new_table, index_max(new_table)[1])
+
+s2 = index_max(table)[1] + 1
+c1 = index_max(new_table)[0] + 1
+
+column_del(table, index_max(table)[1])
+string_del(new_table, index_max(new_table)[0])
+
+answer = []
+for i in table,new_table:
+    answer.append(max_table(i))
+if answer[0] <= answer[1]:
+    print(s1, s2)
+else:
+    print(c1, c2)
