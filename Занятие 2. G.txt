@@ -30,3 +30,5 @@ for i in range(t):
     n = int(input())
     array = [int(x) for x in input().split()]
     processing(array)
+
+# Код прошёл 14 тестов, 15 тест провалил по времени
